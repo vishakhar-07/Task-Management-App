@@ -19,7 +19,7 @@ const Home = () => {
   const fetchTask = async () => {
     try {
       // Local host hata kar Render URL lagaya
-      const response = await fetch(`${API_BASE_URL}/api/tasks`);
+      const response = await fetch("https://onrender.com");
       const data = await response.json();
       if (data.success) {
         setAllTask(data.tasks);
@@ -50,7 +50,7 @@ const Home = () => {
     const newStatus = task.status === "Completed" ? "Pending" : "Completed";
     try {
       // Path live kiya
-      const response = await fetch(`${API_BASE_URL}/api/status/${task._id}`, {
+      const response = await fetch(`https://onrender.com{task._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,7 +74,8 @@ const Home = () => {
   const handleDelete = async (id) => {
     try {
       // Path live kiya
-      const response = await fetch(`${API_BASE_URL}/api/delete-task/${id}`, {
+      const response = await fetch(`https://onrender.com{id}`, 
+ {
         method: "DELETE",
       });
       const data = await response.json();

@@ -30,7 +30,7 @@ const AddTask = () => {
 
     try {
       // ⚠️ FIX: Yahan humne backticks (`) laga diye hain taaki variable sahi se render ho
-      const response = await fetch(`${API_BASE_URL}/api/add-task`, {
+      const response = await fetch("https://onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
