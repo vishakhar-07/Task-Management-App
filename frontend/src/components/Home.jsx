@@ -200,7 +200,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1">
                     <Link to={`/updatetask/${task._id}`}>
                       <button className="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-slate-50 transition cursor-pointer">
                         <Edit3 size={18} />
