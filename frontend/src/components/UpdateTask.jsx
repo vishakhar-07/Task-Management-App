@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, FileText, Flag, Plus } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { API_BASE_URL } from "./config"; // <-- API URL import kiya
+import { API_BASE_URL } from "../config"; // <-- API URL import kiya
 
 const UpdateTask = () => {
   const navigate = useNavigate();
