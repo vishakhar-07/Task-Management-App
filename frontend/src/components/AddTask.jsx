@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import {
   ArrowLeft,
   Plus,
@@ -17,9 +18,8 @@ const AddTask = () => {
     description: "",
     priority: "",
     dueDate: ""
-   }) ;
+  });
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -28,29 +28,27 @@ const AddTask = () => {
   async function handleForm(e) {
     e.preventDefault();
 
-   try{
+    try {
+      // ⚠️ FIX: Yahan humne backticks (`) laga diye hain taaki variable sahi se render ho
+      const response = await fetch(`${API_BASE_URL}/api/add-task`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-   const response =  await fetch("/api/add-task" , {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(formData),
-    });
+      const data = await response.json();
 
-   const data = await response.json()
+      if (data.success) {
+        toast.success(data.message);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
 
-   if(data.success){
-    toast.success(data.message)
-    navigate("/")
-   }else{
-    toast.error(data.message)
-   }
-  
-
-   } catch(error){
-    console.log(error)
-   }
+    } catch (error) {
+      console.log(error);
+    }
   }
-
 
   return (
     <>
@@ -205,9 +203,7 @@ const AddTask = () => {
         </main>
       </div>
     </>
-  )
-
-}
-
+  );
+};
 
 export default AddTask;

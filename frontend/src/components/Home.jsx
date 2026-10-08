@@ -1,4 +1,3 @@
-
 import {
   Plus,
   ListTodo,
@@ -12,13 +11,15 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "./config"; // <-- API URL import kiya
 
 const Home = () => {
   const [allTask, setAllTask] = useState([]);
 
   const fetchTask = async () => {
     try {
-      const response = await fetch("/api/tasks");
+      // Local host hata kar Render URL lagaya
+      const response = await fetch(`${API_BASE_URL}/api/tasks`);
       const data = await response.json();
       if (data.success) {
         setAllTask(data.tasks);
@@ -36,10 +37,8 @@ const Home = () => {
   const completedTask = allTask.filter((task) => task.status === "Completed").length;
   const pendingTask = allTask.filter((task) => task.status === "Pending").length;
 
-  //Format Date 
   const formatDate = (date) => {
     if (!date) return "no due date";
-
     return new Date(date).toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "short",
@@ -47,14 +46,13 @@ const Home = () => {
     });
   };
 
-  // status change function
   const handleStatusChange = async (task) => {
     const newStatus = task.status === "Completed" ? "Pending" : "Completed";
-
     try {
-      const response = await fetch(`/api/status/${task._id}`, {
+      // Path live kiya
+      const response = await fetch(`${API_BASE_URL}/api/status/${task._id}`, {
         method: "PUT",
-        headers: { "content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           status: newStatus,
         }),
@@ -64,12 +62,7 @@ const Home = () => {
       if (data.success) {
         setAllTask((prevTask) =>
           prevTask.map((item) =>
-            item._id === task._id
-              ? {
-                  ...item,
-                  status: newStatus,
-                }
-              : item
+            item._id === task._id ? { ...item, status: newStatus } : item
           )
         );
       }
@@ -78,10 +71,10 @@ const Home = () => {
     }
   };
 
-  // handleDelete function (Fixed parameter reference)
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/api/delete-task/${id}`, {
+      // Path live kiya
+      const response = await fetch(`${API_BASE_URL}/api/delete-task/${id}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -96,42 +89,25 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#f7f8fc] text-slate-800">
-      {/* Main Div  */}
       <div className="mx-auto max-w-7xl px-5 lg:px-8 lg:py-10">
-        {/* Header */}
         <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-              <span className="text-sm font-medium text-emerald-400">
-                {" "}
-                You are Doing great
-              </span>
+              <span className="text-sm font-medium text-emerald-400">You are Doing great</span>
             </div>
-
-            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-              Hello , Dev{" "}
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Here's What's Happening With your Task today.
-            </p>
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">Hello , Dev </h2>
+            <p className="mt-2 text-sm text-slate-500">Here's What's Happening With your Task today.</p>
           </div>
-
-          {/* Add task */}
           <Link to="/addtask">
             <button className="group flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-300 transition duration-200 hover:translate-y-0.5 hover:bg-indigo-600 cursor-pointer">
-              <Plus
-                size={20}
-                className="transition-transform group-hover:rotate-180"
-              />
+              <Plus size={20} className="transition-transform group-hover:rotate-180" />
               Add Task
             </button>
           </Link>
         </div>
 
-        {/* States  */}
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {/* Total Task  */}
           <div className="group rounded-2xl border border-slate-300 bg-white p-5 shadow-sm transition hover:translate-y-1 hover:shadow-md">
             <div className="flex item-center justify-between">
               <div>
@@ -144,7 +120,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-          {/* Pending Task */}
           <div className="group rounded-2xl border border-slate-300 bg-white p-5 shadow-sm transition hover:translate-y-1 hover:shadow-md">
             <div className="flex item-center justify-between">
               <div>
@@ -157,8 +132,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          {/* Completed Task */}
           <div className="group rounded-2xl border border-slate-300 bg-white p-5 shadow-sm transition hover:translate-y-1 hover:shadow-md">
             <div className="flex item-center justify-between">
               <div>
@@ -173,30 +146,18 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Task Area  */}
         <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          {/* Task Header */}
           <div className="mb-6">
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">MY Task's</h3>
-              <p className="mt-1 text-sm text-slate-400">
-                {" "}
-                Manage and Organize you daily tasks
-              </p>
-            </div>
+            <h3 className="text-xl font-bold text-slate-900">MY Task's</h3>
+            <p className="mt-1 text-sm text-slate-400">Manage and Organize your daily tasks</p>
           </div>
-
-          {/* Task Counts */}
           <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-4">
             <div className="flex items-center gap-2 ">
               <span className="text-sm font-semibold text-slate-700">Tasks</span>
-              <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-sm font-bold text-indigo-600">
-                {totalTask}
-              </span>
+              <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-sm font-bold text-indigo-600">{totalTask}</span>
             </div>
           </div>
 
-          {/* Task List  */}
           <div className="w-full space-y-3">
             {allTask.map((task) => (
               <div
@@ -211,62 +172,42 @@ const Home = () => {
                   <div className="flex items-start gap-4 min-w-0 flex-1">
                     <button
                       className="mt-1 shrink-0 cursor-pointer"
-                      onClick={() => {
-                        handleStatusChange(task);
-                      }}
+                      onClick={() => handleStatusChange(task)}
                     >
                       {task.status === "Completed" ? (
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm">
                           <Check size={14} strokeWidth={3} />
                         </div>
                       ) : (
-                        <Circle
-                          size={24}
-                          className="text-slate-300 transition group-hover:text-indigo-400"
-                        />
+                        <div className="h-6 w-6 rounded-full border-2 border-slate-300 bg-white transition hover:border-indigo-500" />
                       )}
                     </button>
-
-                    {/* content  */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2 ">
-                        <h4
-                          className={`text-sm font-bold sm:text-base ${
-                            task.status === "Completed"
-                              ? "text-slate-400 line-through "
-                              : "text-slate-800"
-                          }`}
-                        >
-                          {task.title}
-                        </h4>
-                        <span className="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize bg-slate-100 text-slate-600 border border-slate-200">
+                      <h4 className={`text-base font-semibold transition ${task.status === "Completed" ? "text-slate-400 line-through" : "text-slate-800"}`}>
+                        {task.title}
+                      </h4>
+                      <p className={`mt-1 text-sm ${task.status === "Completed" ? "text-slate-400" : "text-slate-500"}`}>
+                        {task.description}
+                      </p>
+                      <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
+                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          task.priority === "high" ? "bg-red-50 text-red-600" : task.priority === "medium" ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-600"
+                        }`}>
                           {task.priority}
                         </span>
+                        <span>Due: {formatDate(task.dueDate)}</span>
                       </div>
-                      <p className="mt-1 text-sm text-slate-500">{task.description}</p>
-
-                      {task.dueDate && (
-                        <p className="mt-2 text-xs font-medium text-slate-400">
-                          Due: {formatDate(task.dueDate)}
-                        </p>
-                      )}
                     </div>
                   </div>
-
-                  {/* Edit and Delete Action Buttons */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Link
-                      to={`/update-task/${task._id}`}
-                      className="rounded-xl p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition"
-                      title="Edit Task"
-                    >
-                      <Edit3 size={18} />
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link to={`/updatetask/${task._id}`}>
+                      <button className="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+                        <Edit3 size={18} />
+                      </button>
                     </Link>
-
                     <button
                       onClick={() => handleDelete(task._id)}
-                      className="rounded-xl p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition cursor-pointer"
-                      title="Delete Task"
+                      className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer"
                     >
                       <Trash2 size={18} />
                     </button>
