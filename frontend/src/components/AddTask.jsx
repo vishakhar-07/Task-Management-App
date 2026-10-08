@@ -30,7 +30,7 @@ const AddTask = () => {
 
     try {
       // 
-      const response = await ffetch(`${API_BASE_URL}/api/add-task`, {
+      const response = await fetch(`${API_BASE_URL}/api/add-task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
